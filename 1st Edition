@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nickie Sound Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="splash">🎧 Nickie Sound Studio</div>
+  <div id="studio">
+    <input type="file" id="fileInput" multiple accept="audio/*">
+    <button onclick="startRecording()">🎙️ Record</button>
+    <button onclick="stopRecording()">⏹️ Stop</button>
+    <div id="tracks"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  background-color: #000;
+  color: #eee;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+.splash {
+  font-size: 2rem;
+  color: #ff66cc;
+  margin-bottom: 20px;
+}
+button {
+  margin: 10px;
+  padding: 10px 15px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  cursor: pointer;
+}
+audio {
+  display: block;
+  margin: 10px auto;
+}
+let mediaRecorder, recordedChunks = [];
+
+function startRecording() {
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      mediaRecorder = new MediaRecorder(stream);
+      recordedChunks = [];
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = URL.createObjectURL(blob);
+        document.getElementById('tracks').appendChild(audio);
+      };
+      mediaRecorder.start();
+    })
+    .catch(() => alert('Microphone access is needed to record.'));
+}
+
+function stopRecording() {
+  if (mediaRecorder) mediaRecorder.stop();
+}
+
+document.getElementById('fileInput')
+  .addEventListener('change', e => {
+    [...e.target.files].forEach(file => {
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = URL.createObjectURL(file);
+      document.getElementById('tracks').appendChild(audio);
+    });
+  });
