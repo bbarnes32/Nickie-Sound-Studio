@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nickie Sound Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="splash">🎧 Nickie Sound Studio</div>
+  <div id="studio">
+    <input type="file" id="fileInput" multiple accept="audio/*">
+    <button onclick="startRecording()">🎙️ Record</button>
+    <button onclick="stopRecording()">⏹️ Stop</button>
+    <div id="tracks"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
